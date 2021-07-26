@@ -9,9 +9,10 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
-use Rector\Core\PhpParser\AstResolver;
+use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\TypeDeclaration\NodeAnalyzer\ParentParamMatcher;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -21,8 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ParamTypeByParentCallTypeRector extends AbstractRector
 {
     public function __construct(
-        private AstResolver $astResolver,
-        private \Rector\TypeDeclaration\NodeAnalyzer\ParentParamMatcher $parentParamMatcher
+        private ParentParamMatcher $parentParamMatcher
     ) {
     }
 
@@ -69,7 +69,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<class-string<\PhpParser\Node>>
+     * @return array<class-string<Node>>
      */
     public function getNodeTypes(): array
     {
@@ -86,7 +86,7 @@ CODE_SAMPLE
         }
 
         $parentStaticCall = $this->findParentStaticCall($node);
-        if ($parentStaticCall === null) {
+        if (! $parentStaticCall instanceof StaticCall) {
             return null;
         }
 
@@ -102,7 +102,7 @@ CODE_SAMPLE
             }
 
             $parentParam = $this->parentParamMatcher->matchParentParam($parentStaticCall, $param, $scope);
-            if ($parentParam === null) {
+            if (! $parentParam instanceof Param) {
                 continue;
             }
 
@@ -161,7 +161,7 @@ CODE_SAMPLE
         }
 
         $classReflection = $scope->getClassReflection();
-        if ($classReflection === null) {
+        if (! $classReflection instanceof ClassReflection) {
             return true;
         }
 

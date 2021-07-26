@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\NodeAnalyzer;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\PhpParser\AstResolver;
@@ -34,9 +35,6 @@ final class ParentParamMatcher
         }
 
         $parentParam = $this->resolveParentMethodParam($scope, $methodName, $parentStaticCallArgPosition);
-        if ($parentParam === null) {
-            return null;
-        }
 
         return $parentParam;
     }
@@ -71,7 +69,7 @@ final class ParentParamMatcher
             }
 
             $parentClassMethod = $this->astResolver->resolveClassMethod($parnetClassReflection->getName(), $methodName);
-            if ($parentClassMethod === null) {
+            if (! $parentClassMethod instanceof ClassMethod) {
                 continue;
             }
 
