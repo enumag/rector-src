@@ -34,9 +34,7 @@ final class ParentParamMatcher
             return null;
         }
 
-        $parentParam = $this->resolveParentMethodParam($scope, $methodName, $parentStaticCallArgPosition);
-
-        return $parentParam;
+        return $this->resolveParentMethodParam($scope, $methodName, $parentStaticCallArgPosition);
     }
 
     private function matchParentStaticCallArgPosition(StaticCall $parentStaticCall, Param $param): int | null
