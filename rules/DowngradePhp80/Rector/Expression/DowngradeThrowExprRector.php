@@ -57,9 +57,9 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Expression $node
+     * @param \PhpParser\Node\Expr\Expression $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): Node
     {
         return $node;
     }
